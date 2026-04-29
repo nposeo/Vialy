@@ -17,9 +17,13 @@ export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rew
     setIsConfirming(true);
 
     try {
+      const roadName = selectedRoad.properties?.name || selectedRoad.name || 'Неизвестная дорога';
+      const roadQuality = selectedRoad.properties?.quality || selectedRoad.quality || 'medium';
+      const coords = selectedRoad.coordinates;
+
       // Создаем сообщение для подписи
       const message = new TextEncoder().encode(
-        `AutostradAI Quality Confirmation\nRoad: ${selectedRoad.name}\nQuality: ${selectedRoad.quality}\nCoordinates: ${selectedRoad.coordinates.lat.toFixed(6)}, ${selectedRoad.coordinates.lng.toFixed(6)}\nTimestamp: ${Date.now()}`
+        `AutostradAI Quality Confirmation\nRoad: ${roadName}\nQuality: ${roadQuality}\nCoordinates: ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}\nTimestamp: ${Date.now()}`
       );
 
       // Подписываем сообщение
@@ -31,7 +35,7 @@ export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rew
       // Начисляем токены
       setRewards(prev => prev + 10);
 
-      alert(`✅ Качество подтверждено!\n+10 $AUTO токенов\n\nДорога: ${selectedRoad.name}\nКачество: ${selectedRoad.quality === 'good' ? 'Хорошее' : selectedRoad.quality === 'medium' ? 'Среднее' : 'Плохое'}`);
+      alert(`✅ Качество подтверждено!\n+10 $AUTO токенов\n\nДорога: ${roadName}\nКачество: ${roadQuality === 'good' ? 'Хорошее' : roadQuality === 'medium' ? 'Среднее' : 'Плохое'}`);
     } catch (error) {
       console.error('Error signing message:', error);
       alert('Ошибка при подписании сообщения');
@@ -100,17 +104,17 @@ export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rew
           <div className="bg-dark-bg rounded-lg p-3 space-y-2">
             <div>
               <p className="text-xs text-gray-400">Название:</p>
-              <p className="text-sm font-medium">{selectedRoad.name}</p>
+              <p className="text-sm font-medium">{selectedRoad.properties?.name || selectedRoad.name || 'Неизвестная дорога'}</p>
             </div>
             <div>
               <p className="text-xs text-gray-400">Качество:</p>
               <p className={`text-sm font-medium ${
-                selectedRoad.quality === 'good' ? 'text-green-500' :
-                selectedRoad.quality === 'medium' ? 'text-yellow-500' :
+                (selectedRoad.properties?.quality || selectedRoad.quality) === 'good' ? 'text-green-500' :
+                (selectedRoad.properties?.quality || selectedRoad.quality) === 'medium' ? 'text-yellow-500' :
                 'text-red-500'
               }`}>
-                {selectedRoad.quality === 'good' ? 'Хорошее' :
-                 selectedRoad.quality === 'medium' ? 'Среднее' : 'Плохое'}
+                {(selectedRoad.properties?.quality || selectedRoad.quality) === 'good' ? 'Хорошее' :
+                 (selectedRoad.properties?.quality || selectedRoad.quality) === 'medium' ? 'Среднее' : 'Плохое'}
               </p>
             </div>
             <button
