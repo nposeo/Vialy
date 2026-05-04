@@ -118,13 +118,13 @@
     "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
     "signature": "qdGwbpwUootjumltBfzTwwASL/1MQhCURX0zZq421FFbBzC1xtaPOC4oC6M3Aq/XFRoG8ixk6fMFG5ma3oZBCQ==",
     "timestamp": 1777896531688,
-    "likes": 3,
-    "dislikes": 12,
+    "likes": 4,
+    "dislikes": 11,
     "voters": {
-      "likes": [],
-      "dislikes": [
+      "likes": [
         "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL"
-      ]
+      ],
+      "dislikes": []
     }
   },
   {
