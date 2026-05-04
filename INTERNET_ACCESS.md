@@ -7,28 +7,35 @@
 ## 🚀 Быстрый способ (через ngrok) - РЕКОМЕНДУЕТСЯ
 
 ### Шаг 1: Скачать ngrok
+
 1. Перейдите на https://ngrok.com/download
 2. Скачайте версию для Windows
 3. Распакуйте в удобную папку
 
 ### Шаг 2: Зарегистрироваться (бесплатно)
+
 1. Зарегистрируйтесь на https://dashboard.ngrok.com/signup
 2. Скопируйте ваш authtoken со страницы https://dashboard.ngrok.com/get-started/your-authtoken
 
 ### Шаг 3: Настроить ngrok
+
 Откройте командную строку и выполните:
+
 ```bash
 cd путь\к\ngrok
 ngrok config add-authtoken ваш-токен
 ```
 
 ### Шаг 4: Запустить туннель
+
 ```bash
 ngrok http 80
 ```
 
 ### Шаг 5: Получить публичный URL
+
 После запуска вы увидите:
+
 ```
 Forwarding  https://xxxx-xx-xx-xx-xx.ngrok-free.app -> http://localhost:80
 ```
@@ -50,12 +57,15 @@ Forwarding  https://xxxx-xx-xx-xx-xx.ngrok-free.app -> http://localhost:80
 Если нужен доступ только в локальной сети:
 
 1. Узнайте ваш IP:
+
 ```bash
 ipconfig
 ```
+
 Найдите "IPv4 Address" (например, 192.168.1.100)
 
 2. Откройте в браузере:
+
 ```
 http://192.168.1.100/
 ```
@@ -83,6 +93,7 @@ http://192.168.1.100/
 Для постоянного размещения лучше использовать облачный хостинг:
 
 ### Vercel (бесплатно, 5 минут)
+
 ```bash
 # Установить Vercel CLI
 npm install -g vercel
@@ -99,11 +110,14 @@ vercel
 Получите URL типа: `https://autostrad-ai.vercel.app`
 
 ### Netlify (бесплатно, drag & drop)
+
 1. Перейдите на https://app.netlify.com/drop
 2. Перетащите папку `dist/` в окно браузера
 3. Получите URL типа: `https://random-name.netlify.app`
 
 ## 📊 Текущий статус
+
+1
 
 - ✅ Production-сборка готова
 - ✅ Файлы скопированы в корень домена

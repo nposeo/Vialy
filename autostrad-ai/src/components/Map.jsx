@@ -90,8 +90,12 @@ export default function Map({ routingMode, onRoadClick }) {
 
     layer.on({
       click: (e) => {
+        // Create stable ID based on road name and first coordinate
+        const coords = feature.geometry.coordinates[0];
+        const stableId = `road-${roadName}-${coords[0].toFixed(4)}-${coords[1].toFixed(4)}`;
+
         const segmentData = {
-          id: feature.id || `segment-${Date.now()}`,
+          id: stableId,
           properties: {
             ...feature.properties,
             name: roadName,
