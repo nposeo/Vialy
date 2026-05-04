@@ -1,43 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import WalletContextProvider from './components/WalletProvider';
 import Sidebar from './components/Sidebar';
 import Map from './components/Map';
 import RoadInfoPanel from './components/RoadInfoPanel';
 import AddReviewForm from './components/AddReviewForm';
 import ReviewsListView from './components/ReviewsListView';
-
-// DePIN Token Economics
-const REWARDS = {
-  REVIEW_SUBMIT: 10,      // +10 токенов за отзыв
-  VOTE_LIKE: 1,           // +1 токен за лайк
-  VOTE_DISLIKE: 1,        // +1 токен за дизлайк
-  RECEIVE_LIKE: 2,        // +2 токена автору за полученный лайк
-  RECEIVE_DISLIKE: -5,    // -5 токенов автору за полученный дизлайк
-};
+import { api } from './utils/api';
 
 function App() {
   const [routingMode, setRoutingMode] = useState('fast');
   const [selectedRoad, setSelectedRoad] = useState(null);
-
-  // Rewards state
-  const [rewards, setRewards] = useState(() => {
-    const saved = localStorage.getItem('autostrad_rewards');
-    return saved ? parseInt(saved) : 0;
-  });
-
-  // Reviews state
-  const [reviews, setReviews] = useState(() => {
-    try {
-      const saved = localStorage.getItem('autostrad_reviews');
-      console.log('Raw localStorage data:', saved);
-      const parsed = saved ? JSON.parse(saved) : [];
-      console.log('Loading reviews from localStorage:', parsed);
-      return parsed;
-    } catch (error) {
-      console.error('Error loading reviews:', error);
-      return [];
-    }
-  });
+  const [rewards, setRewards] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Modal states
   const [showRoadInfo, setShowRoadInfo] = useState(false);
@@ -45,22 +21,50 @@ function App() {
   const [showReviewsList, setShowReviewsList] = useState(false);
   const [currentSegment, setCurrentSegment] = useState(null);
 
-  // Save rewards to localStorage
+  // Load reviews on mount
   useEffect(() => {
-    localStorage.setItem('autostrad_rewards', rewards.toString());
-  }, [rewards]);
+    loadReviews();
+  }, []);
 
-  // Save reviews to localStorage
-  useEffect(() => {
-    console.log('Saving reviews to localStorage:', reviews);
-    localStorage.setItem('autostrad_reviews', JSON.stringify(reviews));
-  }, [reviews]);
+  const loadReviews = async () => {
+    try {
+      const data = await api.getReviews();
+      setReviews(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to load reviews:', error);
+      setLoading(false);
+    }
+  };
 
   // Handle road click on map
   const handleRoadClick = (roadData) => {
-    setSelectedRoad(roadData);
-    setCurrentSegment(roadData);
-    setShowRoadInfo(true);
+    console.log('handleRoadClick - roadData:', roadData);
+    console.log('handleRoadClick - roadData.id:', roadData?.id);
+
+    // Create a clean copy to ensure all fields are preserved
+    // Convert LatLng to plain object to avoid serialization issues
+    const segmentCopy = {
+      id: roadData.id,
+      properties: { ...roadData.properties },
+      geometry: roadData.geometry,
+      coordinates: roadData.coordinates ? {
+        lat: roadData.coordinates.lat,
+        lng: roadData.coordinates.lng
+      } : null
+    };
+
+    console.log('handleRoadClick - segmentCopy:', segmentCopy);
+    console.log('handleRoadClick - segmentCopy.id:', segmentCopy.id);
+
+    setSelectedRoad(segmentCopy);
+    setCurrentSegment(segmentCopy);
+
+    // Add a small delay to ensure state updates
+    setTimeout(() => {
+      console.log('After setState - checking currentSegment');
+      setShowRoadInfo(true);
+    }, 0);
   };
 
   // Handle "Добавить" button
@@ -71,113 +75,204 @@ function App() {
 
   // Handle "Отзывы" button
   const handleViewReviews = (segment) => {
+    console.log('handleViewReviews called with segment:', segment);
+    console.log('handleViewReviews - segment.id:', segment?.id);
     setCurrentSegment(segment);
-    setShowReviewsList(true);
+
+    // Add a small delay to ensure state updates
+    setTimeout(() => {
+      setShowReviewsList(true);
+    }, 0);
   };
 
   // Handle review submission
-  const handleSubmitReview = (review) => {
-    console.log('Submitting review:', review);
-    setReviews([...reviews, review]);
+  const handleSubmitReview = async (review) => {
+    try {
+      console.log('Submitting review:', review);
+      const result = await api.addReview(review);
 
-    // Reward user for submitting review
-    setRewards((prev) => prev + REWARDS.REVIEW_SUBMIT);
+      if (result.success) {
+        // Reload reviews
+        await loadReviews();
 
-    console.log(`Review submitted! +${REWARDS.REVIEW_SUBMIT} tokens`);
-    console.log('Total reviews:', reviews.length + 1);
+        // Update balance
+        setRewards(result.balance);
+
+        console.log(`Review submitted! Balance: ${result.balance} tokens`);
+      }
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+      alert('Ошибка при отправке отзыва');
+    }
   };
 
   // Handle like
-  const handleLikeReview = (reviewId, voteData) => {
-    setReviews((prevReviews) =>
-      prevReviews.map((review) => {
-        if (review.id === reviewId) {
-          return {
-            ...review,
-            likes: review.likes + 1,
-          };
-        }
-        return review;
-      })
-    );
+  const handleLikeReview = async (reviewId, voteData) => {
+    try {
+      console.log('Liking review:', reviewId, 'by voter:', voteData.voter);
+      const result = await api.likeReview(reviewId, voteData.voter);
+      console.log('Like result:', result);
 
-    // Reward voter for liking
-    setRewards((prev) => prev + REWARDS.VOTE_LIKE);
+      if (result.success) {
+        // Reload reviews
+        await loadReviews();
 
-    console.log(`Liked review! +${REWARDS.VOTE_LIKE} token`);
+        // Update balance
+        setRewards(result.balance);
 
-    // Note: In real DePIN, we would also reward the review author
-    // This would require tracking author wallets and distributing tokens
+        console.log(`Liked review! Balance: ${result.balance} tokens`);
+      }
+    } catch (error) {
+      console.error('Failed to like review:', error);
+      alert('Ошибка при голосовании');
+    }
   };
 
   // Handle dislike
-  const handleDislikeReview = (reviewId, voteData) => {
-    setReviews((prevReviews) =>
-      prevReviews.map((review) => {
-        if (review.id === reviewId) {
-          return {
-            ...review,
-            dislikes: review.dislikes + 1,
-          };
-        }
-        return review;
-      })
-    );
+  const handleDislikeReview = async (reviewId, voteData) => {
+    try {
+      const result = await api.dislikeReview(reviewId, voteData.voter);
 
-    // Reward voter for disliking (moderation)
-    setRewards((prev) => prev + REWARDS.VOTE_DISLIKE);
+      if (result.success) {
+        // Reload reviews
+        await loadReviews();
 
-    console.log(`Disliked review! +${REWARDS.VOTE_DISLIKE} token`);
+        // Update balance
+        setRewards(result.balance);
 
-    // Note: In real DePIN, we would penalize the review author
-    // This would require on-chain logic to deduct tokens from author's wallet
+        console.log(`Disliked review! Balance: ${result.balance} tokens`);
+      }
+    } catch (error) {
+      console.error('Failed to dislike review:', error);
+      alert('Ошибка при голосовании');
+    }
   };
 
   return (
     <WalletContextProvider>
-      <div className="flex h-screen bg-dark-bg text-white">
-        <Sidebar
-          routingMode={routingMode}
-          setRoutingMode={setRoutingMode}
-          selectedRoad={selectedRoad}
-          rewards={rewards}
-          setRewards={setRewards}
-        />
-        <div className="flex-1">
-          <Map
-            routingMode={routingMode}
-            onRoadClick={handleRoadClick}
-          />
-        </div>
-
-        {/* Road Info Panel */}
-        <RoadInfoPanel
-          isOpen={showRoadInfo}
-          onClose={() => setShowRoadInfo(false)}
-          segment={currentSegment}
-          onAddReview={handleAddReview}
-          onViewReviews={handleViewReviews}
-        />
-
-        {/* Add Review Form */}
-        <AddReviewForm
-          isOpen={showAddReview}
-          onClose={() => setShowAddReview(false)}
-          segment={currentSegment}
-          onSubmit={handleSubmitReview}
-        />
-
-        {/* Reviews List */}
-        <ReviewsListView
-          isOpen={showReviewsList}
-          onClose={() => setShowReviewsList(false)}
-          segment={currentSegment}
-          reviews={reviews}
-          onLike={handleLikeReview}
-          onDislike={handleDislikeReview}
-        />
-      </div>
+      <AppContent
+        routingMode={routingMode}
+        setRoutingMode={setRoutingMode}
+        selectedRoad={selectedRoad}
+        rewards={rewards}
+        setRewards={setRewards}
+        reviews={reviews}
+        loading={loading}
+        showRoadInfo={showRoadInfo}
+        setShowRoadInfo={setShowRoadInfo}
+        showAddReview={showAddReview}
+        setShowAddReview={setShowAddReview}
+        showReviewsList={showReviewsList}
+        setShowReviewsList={setShowReviewsList}
+        currentSegment={currentSegment}
+        handleRoadClick={handleRoadClick}
+        handleAddReview={handleAddReview}
+        handleViewReviews={handleViewReviews}
+        handleSubmitReview={handleSubmitReview}
+        handleLikeReview={handleLikeReview}
+        handleDislikeReview={handleDislikeReview}
+      />
     </WalletContextProvider>
+  );
+}
+
+function AppContent({
+  routingMode,
+  setRoutingMode,
+  selectedRoad,
+  rewards,
+  setRewards,
+  reviews,
+  loading,
+  showRoadInfo,
+  setShowRoadInfo,
+  showAddReview,
+  setShowAddReview,
+  showReviewsList,
+  setShowReviewsList,
+  currentSegment,
+  handleRoadClick,
+  handleAddReview,
+  handleViewReviews,
+  handleSubmitReview,
+  handleLikeReview,
+  handleDislikeReview,
+}) {
+  const { publicKey } = useWallet();
+
+  // Track currentSegment changes
+  useEffect(() => {
+    console.log('currentSegment changed:', currentSegment);
+    console.log('currentSegment.id:', currentSegment?.id);
+  }, [currentSegment]);
+
+  // Load balance when wallet connects
+  useEffect(() => {
+    if (publicKey) {
+      loadBalance();
+    }
+  }, [publicKey]);
+
+  const loadBalance = async () => {
+    try {
+      const result = await api.getBalance(publicKey.toString());
+      setRewards(result.balance);
+    } catch (error) {
+      console.error('Failed to load balance:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-dark-bg text-white items-center justify-center">
+        <div className="text-xl">Загрузка...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen bg-dark-bg text-white">
+      <Sidebar
+        routingMode={routingMode}
+        setRoutingMode={setRoutingMode}
+        selectedRoad={selectedRoad}
+        rewards={rewards}
+        setRewards={setRewards}
+      />
+      <div className="flex-1">
+        <Map routingMode={routingMode} onRoadClick={handleRoadClick} />
+      </div>
+
+      {/* Road Info Panel */}
+      <RoadInfoPanel
+        isOpen={showRoadInfo}
+        onClose={() => setShowRoadInfo(false)}
+        segment={currentSegment}
+        onAddReview={handleAddReview}
+        onViewReviews={handleViewReviews}
+      />
+
+      {/* Add Review Form */}
+      <AddReviewForm
+        isOpen={showAddReview}
+        onClose={() => setShowAddReview(false)}
+        segment={currentSegment}
+        onSubmit={handleSubmitReview}
+      />
+
+      {/* Reviews List */}
+      <ReviewsListView
+        isOpen={showReviewsList}
+        onClose={() => {
+          console.log('Closing ReviewsList');
+          setShowReviewsList(false);
+        }}
+        segment={currentSegment}
+        reviews={reviews}
+        onLike={handleLikeReview}
+        onDislike={handleDislikeReview}
+      />
+    </div>
   );
 }
 

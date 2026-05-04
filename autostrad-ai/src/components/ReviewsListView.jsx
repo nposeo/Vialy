@@ -15,6 +15,15 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
   console.log('ReviewsListView - filtered reviews:', segmentReviews);
   console.log('ReviewsListView - segment.id:', segment?.id);
 
+  // Check if current user voted
+  const hasUserLiked = (review) => {
+    return review.voters?.likes?.includes(publicKey?.toString());
+  };
+
+  const hasUserDisliked = (review) => {
+    return review.voters?.dislikes?.includes(publicKey?.toString());
+  };
+
   const handleLike = async (reviewId) => {
     if (!publicKey) {
       alert('Подключите кошелек');
@@ -218,22 +227,24 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
                                 gap: '0.5rem',
                                 padding: '0.5rem 0.75rem',
                                 borderRadius: '0.5rem',
-                                backgroundColor: '#4b5563',
+                                backgroundColor: hasUserLiked(review) ? '#22c55e' : '#4b5563',
                                 border: 'none',
                                 cursor: publicKey ? 'pointer' : 'not-allowed',
                                 opacity: processingId === review.id || !publicKey ? 0.5 : 1
                               }}
                               onMouseOver={(e) => {
-                                if (publicKey && processingId !== review.id) {
+                                if (publicKey && processingId !== review.id && !hasUserLiked(review)) {
                                   e.currentTarget.style.backgroundColor = '#22c55e';
                                 }
                               }}
                               onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = '#4b5563';
+                                if (!hasUserLiked(review)) {
+                                  e.currentTarget.style.backgroundColor = '#4b5563';
+                                }
                               }}
                             >
                               <ThumbsUp size={16} style={{ color: 'white' }} />
-                              <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>{review.likes}</span>
+                              <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>{review.likes || 0}</span>
                             </button>
 
                             <button
@@ -245,22 +256,24 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
                                 gap: '0.5rem',
                                 padding: '0.5rem 0.75rem',
                                 borderRadius: '0.5rem',
-                                backgroundColor: '#4b5563',
+                                backgroundColor: hasUserDisliked(review) ? '#ef4444' : '#4b5563',
                                 border: 'none',
                                 cursor: publicKey ? 'pointer' : 'not-allowed',
                                 opacity: processingId === review.id || !publicKey ? 0.5 : 1
                               }}
                               onMouseOver={(e) => {
-                                if (publicKey && processingId !== review.id) {
+                                if (publicKey && processingId !== review.id && !hasUserDisliked(review)) {
                                   e.currentTarget.style.backgroundColor = '#ef4444';
                                 }
                               }}
                               onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = '#4b5563';
+                                if (!hasUserDisliked(review)) {
+                                  e.currentTarget.style.backgroundColor = '#4b5563';
+                                }
                               }}
                             >
                               <ThumbsDown size={16} style={{ color: 'white' }} />
-                              <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>{review.dislikes}</span>
+                              <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>{review.dislikes || 0}</span>
                             </button>
 
                             {processingId === review.id && (

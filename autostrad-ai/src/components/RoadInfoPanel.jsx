@@ -3,6 +3,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { X, ThumbsUp, Star } from 'lucide-react';
 
 export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, onViewReviews }) {
+  console.log('RoadInfoPanel - segment:', segment);
+  console.log('RoadInfoPanel - segment.id:', segment?.id);
+
   if (!segment) return null;
 
   const { name, rating = 0, votes = 0, likes = 0 } = segment.properties || {};

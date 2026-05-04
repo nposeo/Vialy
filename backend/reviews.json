@@ -1,0 +1,148 @@
+[
+  {
+    "id": "1777893364099",
+    "segmentId": "road-т1628-29.4399-45.7599",
+    "roadName": "т1628",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 5,
+    "comment": "test test test",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "73lyPYs5wgXxr3VrFcZoZqQa2lkwpoUaGhl89c6VjUCVAvgHdUxLEZkYxZN157Kmhkvno0MTYS8nzGLp/eTBAw==",
+    "timestamp": 1777893364099,
+    "likes": 3,
+    "dislikes": 2,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  },
+  {
+    "id": "1777893414740",
+    "segmentId": "road-т1628-29.4399-45.7599",
+    "roadName": "т1628",
+    "segment": "",
+    "rating": 5,
+    "comment": "test test  test test\n",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "JuGO70htXNLtyfUKPajYis7O5gHig79f17PUa1oUC/gCCbzZCUOM+N+roB3OxbUxTsV/Se4+z4EHxp0kXsJiBg==",
+    "timestamp": 1777893414740,
+    "likes": 4,
+    "dislikes": 3,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  },
+  {
+    "id": "1777894622945",
+    "segmentId": "road-т1628-29.4399-45.7599",
+    "roadName": "т1628",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 3,
+    "comment": "1111111111111111",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "sJD0pdROVhlzafwz18mnsleizQCzKkx0jNkSa2/BRmeRr+XtwH41nka0XgrU6HJjD1UAP8UVkPTjihUmEJBmAA==",
+    "timestamp": 1777894622945,
+    "likes": 0,
+    "dislikes": 0,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  },
+  {
+    "id": "1777894626214",
+    "segmentId": "road-Лінія 368-30.7386-50.4893",
+    "roadName": "Лінія 368",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 1,
+    "comment": "There is no Road here!",
+    "date": "2026-05-04",
+    "author": "Adoqbauu9Y6TuiGrYWE8wA2UhrVoFWnkCMWksUUEyrE7",
+    "signature": "zPYplmOknq/7L/ZOF6nB5pV0lrjbWqWVqeUsHgVaK8Vo6K3Wwkr/IytsfHDd76iLu3dGMyKlI4CL2jlQuEU9BQ==",
+    "timestamp": 1777894626214,
+    "likes": 5,
+    "dislikes": 1,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  },
+  {
+    "id": "1777894735017",
+    "segmentId": "road-т1628-29.4399-45.7599",
+    "roadName": "т1628",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 5,
+    "comment": "111111111111111111111111111",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "2Oluu7akSgsLjPRjXPWjpvolrLgopTiRBEb/pXOCsF6bBdg6GPjXjwAgGSCr0TiXvdjDN8EGit/6xcHKujy+CQ==",
+    "timestamp": 1777894735017,
+    "likes": 2,
+    "dislikes": 2,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  },
+  {
+    "id": "1777895399278",
+    "segmentId": "road-м05-30.1961-49.7138",
+    "roadName": "м05",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 5,
+    "comment": "Роооооооон",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "plKkYncSPLnniJ6Dytr82PmNTczelKvncEcJ/f1LWVCGlbzfYMc0BovjKZraDNZlxBz05FuYroe2b37h5Tk/Aw==",
+    "timestamp": 1777895399278,
+    "likes": 0,
+    "dislikes": 0,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  },
+  {
+    "id": "1777896531688",
+    "segmentId": "road-М 17-32.5255-46.6924",
+    "roadName": "М 17",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 4,
+    "comment": "test test test",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "qdGwbpwUootjumltBfzTwwASL/1MQhCURX0zZq421FFbBzC1xtaPOC4oC6M3Aq/XFRoG8ixk6fMFG5ma3oZBCQ==",
+    "timestamp": 1777896531688,
+    "likes": 3,
+    "dislikes": 12,
+    "voters": {
+      "likes": [],
+      "dislikes": [
+        "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL"
+      ]
+    }
+  },
+  {
+    "id": "1777899812650",
+    "segmentId": "road-Лінія 368-30.7386-50.4893",
+    "roadName": "Лінія 368",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 3,
+    "comment": "тестовий відгук про роботу.",
+    "date": "2026-05-04",
+    "author": "Adoqbauu9Y6TuiGrYWE8wA2UhrVoFWnkCMWksUUEyrE7",
+    "signature": "zncDW0hstdPn+26MlSQxyhex2OZV7B4aUULaJPvD4kFPP+1TXAKA0NHjVj+bDXZrLCdSEO90uZ/8Gzyom3x2AQ==",
+    "timestamp": 1777899812650,
+    "likes": 1,
+    "dislikes": 0,
+    "voters": {
+      "likes": [],
+      "dislikes": []
+    }
+  }
+]
