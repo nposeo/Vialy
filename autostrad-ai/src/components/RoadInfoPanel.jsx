@@ -1,14 +1,39 @@
-import { Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { X, ThumbsUp, Star } from 'lucide-react';
+import { api } from '../utils/api';
 
 export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, onViewReviews }) {
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   console.log('RoadInfoPanel - segment:', segment);
   console.log('RoadInfoPanel - segment.id:', segment?.id);
 
+  // Load average rating when segment changes
+  useEffect(() => {
+    if (segment?.id) {
+      setLoading(true);
+      api.getSegmentAverageRating(segment.id)
+        .then(data => {
+          setAverageRating(data.averageRating || 0);
+          setTotalReviews(data.totalReviews || 0);
+        })
+        .catch(error => {
+          console.error('Failed to load average rating:', error);
+          setAverageRating(0);
+          setTotalReviews(0);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [segment?.id]);
+
   if (!segment) return null;
 
-  const { name, rating = 0, votes = 0, likes = 0 } = segment.properties || {};
+  const { name } = segment.properties || {};
 
   // Mock data для демонстрации (если нет в GeoJSON)
   const settlements = segment.properties?.settlements || 'Копти-Глухов-Бачевск';
@@ -110,29 +135,41 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                   padding: '1rem',
                   marginBottom: '1.5rem'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <ThumbsUp style={{ color: '#22c55e' }} size={20} />
-                      <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white' }}>
-                        {rating.toFixed(1)}
-                      </span>
+                  {loading ? (
+                    <div style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
+                      Загрузка рейтинга...
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={20}
-                          style={{
-                            color: star <= rating ? '#facc15' : '#6b7280',
-                            fill: star <= rating ? '#facc15' : 'none'
-                          }}
-                        />
-                      ))}
+                  ) : totalReviews > 0 ? (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <ThumbsUp style={{ color: '#22c55e' }} size={20} />
+                          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white' }}>
+                            {averageRating.toFixed(1)}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={20}
+                              style={{
+                                color: star <= averageRating ? '#facc15' : '#6b7280',
+                                fill: star <= averageRating ? '#facc15' : 'none'
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                        ({totalReviews} {totalReviews === 1 ? 'отзыв' : totalReviews < 5 ? 'отзыва' : 'отзывов'})
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
+                      Пока нет отзывов. Будьте первым!
                     </div>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                    ({votes} {votes === 1 ? 'голос' : votes < 5 ? 'голоса' : 'голосов'})
-                  </div>
+                  )}
                 </div>
 
                 {/* Action Buttons */}

@@ -199,6 +199,61 @@ app.get('/api/balance/:wallet', (req, res) => {
   }
 });
 
+// Get average rating for a segment
+app.get('/api/segments/:segmentId/average-rating', (req, res) => {
+  try {
+    const { segmentId } = req.params;
+    const reviews = readReviews();
+
+    // Filter reviews for this segment
+    const segmentReviews = reviews.filter(r => r.segmentId === segmentId);
+
+    if (segmentReviews.length === 0) {
+      return res.json({
+        segmentId,
+        averageRating: 0,
+        totalReviews: 0
+      });
+    }
+
+    // Calculate average rating
+    const totalRating = segmentReviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = totalRating / segmentReviews.length;
+
+    res.json({
+      segmentId,
+      averageRating: parseFloat(averageRating.toFixed(1)),
+      totalReviews: segmentReviews.length
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get average rating' });
+  }
+});
+
+// Confirm road quality and reward tokens
+app.post('/api/confirm-quality', (req, res) => {
+  try {
+    const { wallet, roadName, quality, signature } = req.body;
+
+    if (!wallet || !signature) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Update balance
+    const balances = readBalances();
+    balances[wallet] = (balances[wallet] || 0) + 10;
+    writeBalances(balances);
+
+    res.json({
+      success: true,
+      balance: balances[wallet],
+      reward: 10
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to confirm quality' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Backend API running on http://localhost:${PORT}`);

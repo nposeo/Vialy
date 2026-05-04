@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useConnection } from '@solana/wallet-adapter-react';
+import { api } from '../utils/api';
 
 export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rewards, setRewards }) {
   const { publicKey, signMessage } = useWallet();
@@ -28,17 +29,30 @@ export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rew
 
       // Подписываем сообщение
       const signature = await signMessage(message);
+      const signatureBase64 = btoa(String.fromCharCode(...signature));
 
       console.log('Signature:', signature);
       console.log('Message signed successfully');
 
-      // Начисляем токены
-      setRewards(prev => prev + 10);
+      // Отправляем на backend для сохранения баланса
+      const result = await api.confirmQuality(
+        publicKey.toString(),
+        roadName,
+        roadQuality,
+        signatureBase64
+      );
 
-      alert(`✅ Качество подтверждено!\n+10 $AUTO токенов\n\nДорога: ${roadName}\nКачество: ${roadQuality === 'good' ? 'Хорошее' : roadQuality === 'medium' ? 'Среднее' : 'Плохое'}`);
+      if (result.success) {
+        // Обновляем баланс из ответа backend
+        setRewards(result.balance);
+
+        alert(`✅ Качество подтверждено!\n+${result.reward} $AUTO токенов\n\nДорога: ${roadName}\nКачество: ${roadQuality === 'good' ? 'Хорошее' : roadQuality === 'medium' ? 'Среднее' : 'Плохое'}`);
+      } else {
+        throw new Error('Failed to confirm quality');
+      }
     } catch (error) {
-      console.error('Error signing message:', error);
-      alert('Ошибка при подписании сообщения');
+      console.error('Error confirming quality:', error);
+      alert('Ошибка при подтверждении качества');
     } finally {
       setIsConfirming(false);
     }

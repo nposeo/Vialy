@@ -42,4 +42,20 @@ export const api = {
     const response = await fetch(`${API_URL}/balance/${wallet}`);
     return response.json();
   },
+
+  // Get average rating for segment
+  async getSegmentAverageRating(segmentId) {
+    const response = await fetch(`${API_URL}/segments/${segmentId}/average-rating`);
+    return response.json();
+  },
+
+  // Confirm road quality
+  async confirmQuality(wallet, roadName, quality, signature) {
+    const response = await fetch(`${API_URL}/confirm-quality`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet, roadName, quality, signature }),
+    });
+    return response.json();
+  },
 };

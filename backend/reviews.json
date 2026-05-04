@@ -64,10 +64,12 @@
     "author": "Adoqbauu9Y6TuiGrYWE8wA2UhrVoFWnkCMWksUUEyrE7",
     "signature": "zPYplmOknq/7L/ZOF6nB5pV0lrjbWqWVqeUsHgVaK8Vo6K3Wwkr/IytsfHDd76iLu3dGMyKlI4CL2jlQuEU9BQ==",
     "timestamp": 1777894626214,
-    "likes": 5,
+    "likes": 6,
     "dislikes": 1,
     "voters": {
-      "likes": [],
+      "likes": [
+        "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL"
+      ],
       "dislikes": []
     }
   },
