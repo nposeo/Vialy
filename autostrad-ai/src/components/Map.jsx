@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap } from 'react-l
 import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { api } from '../utils/api';
 
 // Fix for default marker icons in Leaflet with Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -52,12 +53,13 @@ function MapController({ center }) {
   return null;
 }
 
-export default function Map({ routingMode, onRoadClick }) {
+export default function Map({ routingMode, onRoadClick, ratingsUpdateTrigger }) {
   const { t, i18n } = useTranslation();
   const [roadsData, setRoadsData] = useState(null);
   const [mapCenter, setMapCenter] = useState([48.3794, 31.1656]); // Центр Украины
   const [selectedRoad, setSelectedRoad] = useState(null);
   const [geoJsonKey, setGeoJsonKey] = useState(0); // Ключ для пересоздания GeoJSON слоя
+  const [roadRatings, setRoadRatings] = useState({}); // Рейтинги дорог из отзывов
 
   useEffect(() => {
     // Загрузка GeoJSON данных
@@ -70,6 +72,25 @@ export default function Map({ routingMode, onRoadClick }) {
       .catch(error => console.error('Error loading roads data:', error));
   }, []);
 
+  // Загрузка рейтингов дорог
+  useEffect(() => {
+    const loadRatings = async () => {
+      try {
+        const ratings = await api.getRoadRatings();
+        // Преобразуем массив в объект для быстрого доступа по segmentId
+        const ratingsMap = {};
+        ratings.forEach(rating => {
+          ratingsMap[rating.segmentId] = rating.averageRating;
+        });
+        setRoadRatings(ratingsMap);
+        console.log('Loaded road ratings:', ratingsMap);
+      } catch (error) {
+        console.error('Failed to load road ratings:', error);
+      }
+    };
+    loadRatings();
+  }, [ratingsUpdateTrigger]); // Перезагружаем рейтинги при изменении триггера
+
   // Пересоздаем GeoJSON слой при смене языка
   useEffect(() => {
     setGeoJsonKey(prev => prev + 1);
@@ -78,7 +99,38 @@ export default function Map({ routingMode, onRoadClick }) {
   // Стиль для каждой дороги
   const roadStyle = (feature) => {
     const roadName = feature.properties?.name || '';
-    const quality = getRoadQuality(roadName);
+
+    // Создаем стабильный ID для сегмента
+    const coords = feature.geometry?.coordinates?.[0];
+    if (!coords || !Array.isArray(coords) || coords.length < 2) {
+      // Fallback если структура неправильная
+      const quality = getRoadQuality(roadName);
+      const opacity = routingMode === 'comfort' && quality === 'poor' ? 0.3 : 0.8;
+      return {
+        color: qualityColors[quality],
+        weight: quality === 'good' ? 4 : quality === 'medium' ? 3 : 2,
+        opacity: opacity,
+      };
+    }
+
+    const segmentId = `road-${roadName}-${coords[0].toFixed(4)}-${coords[1].toFixed(4)}`;
+
+    // Проверяем, есть ли рейтинг для этого сегмента
+    let quality;
+    if (roadRatings[segmentId] !== undefined) {
+      const rating = roadRatings[segmentId];
+      // Определяем качество на основе рейтинга
+      if (rating < 3) {
+        quality = 'poor';   // красный
+      } else if (rating < 4) {
+        quality = 'medium'; // желтый
+      } else {
+        quality = 'good';   // зеленый
+      }
+    } else {
+      // Если рейтинга нет, используем старую логику на основе названия
+      quality = getRoadQuality(roadName);
+    }
 
     // В режиме "Комфортный" делаем плохие дороги полупрозрачными
     const opacity = routingMode === 'comfort' && quality === 'poor' ? 0.3 : 0.8;
@@ -93,7 +145,30 @@ export default function Map({ routingMode, onRoadClick }) {
   // Обработчик клика по дороге
   const onEachFeature = (feature, layer) => {
     const roadName = feature.properties?.name || 'Неизвестная дорога';
-    const quality = getRoadQuality(roadName);
+
+    // Создаем стабильный ID для сегмента
+    const coords = feature.geometry?.coordinates?.[0];
+    if (!coords || !Array.isArray(coords) || coords.length < 2) {
+      return; // Skip if invalid structure
+    }
+
+    const segmentId = `road-${roadName}-${coords[0].toFixed(4)}-${coords[1].toFixed(4)}`;
+
+    // Определяем качество на основе рейтинга или названия
+    let quality;
+    if (roadRatings[segmentId] !== undefined) {
+      const rating = roadRatings[segmentId];
+      if (rating < 3) {
+        quality = 'poor';
+      } else if (rating < 4) {
+        quality = 'medium';
+      } else {
+        quality = 'good';
+      }
+    } else {
+      quality = getRoadQuality(roadName);
+    }
+
     const qualityText = quality === 'good' ? t('selectedRoad.good') :
                         quality === 'medium' ? t('selectedRoad.medium') :
                         t('selectedRoad.bad');
@@ -101,7 +176,6 @@ export default function Map({ routingMode, onRoadClick }) {
     layer.on({
       click: (e) => {
         // Create stable ID based on road name and first coordinate
-        const coords = feature.geometry.coordinates[0];
         const stableId = `road-${roadName}-${coords[0].toFixed(4)}-${coords[1].toFixed(4)}`;
 
         const segmentData = {
@@ -156,7 +230,7 @@ export default function Map({ routingMode, onRoadClick }) {
 
         {roadsData && (
           <GeoJSON
-            key={geoJsonKey}
+            key={`${geoJsonKey}-${Object.keys(roadRatings).length}`}
             data={roadsData}
             style={roadStyle}
             onEachFeature={onEachFeature}

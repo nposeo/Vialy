@@ -254,6 +254,47 @@ app.post('/api/confirm-quality', (req, res) => {
   }
 });
 
+// Get average ratings for all roads
+app.get('/api/roads/ratings', (req, res) => {
+  try {
+    const reviews = readReviews();
+
+    // Group reviews by segmentId
+    const segmentRatings = {};
+
+    reviews.forEach(review => {
+      const segmentId = review.segmentId;
+      if (!segmentRatings[segmentId]) {
+        segmentRatings[segmentId] = {
+          segmentId,
+          roadName: review.roadName,
+          ratings: [],
+          totalReviews: 0
+        };
+      }
+      segmentRatings[segmentId].ratings.push(review.rating);
+      segmentRatings[segmentId].totalReviews++;
+    });
+
+    // Calculate average rating for each segment
+    const ratingsArray = Object.values(segmentRatings).map(segment => {
+      const totalRating = segment.ratings.reduce((sum, rating) => sum + rating, 0);
+      const averageRating = totalRating / segment.totalReviews;
+
+      return {
+        segmentId: segment.segmentId,
+        roadName: segment.roadName,
+        averageRating: parseFloat(averageRating.toFixed(1)),
+        totalReviews: segment.totalReviews
+      };
+    });
+
+    res.json(ratingsArray);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get road ratings' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Backend API running on http://localhost:${PORT}`);

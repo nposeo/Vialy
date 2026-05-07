@@ -15,6 +15,7 @@ function App() {
   const [rewards, setRewards] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ratingsUpdateTrigger, setRatingsUpdateTrigger] = useState(0);
 
   // Modal states
   const [showRoadInfo, setShowRoadInfo] = useState(false);
@@ -99,6 +100,9 @@ function App() {
         // Update balance
         setRewards(result.balance);
 
+        // Trigger ratings update in Map
+        setRatingsUpdateTrigger(prev => prev + 1);
+
         console.log(`Review submitted! Balance: ${result.balance} tokens`);
       }
     } catch (error) {
@@ -166,6 +170,7 @@ function App() {
         showReviewsList={showReviewsList}
         setShowReviewsList={setShowReviewsList}
         currentSegment={currentSegment}
+        ratingsUpdateTrigger={ratingsUpdateTrigger}
         handleRoadClick={handleRoadClick}
         handleAddReview={handleAddReview}
         handleViewReviews={handleViewReviews}
@@ -192,6 +197,7 @@ function AppContent({
   showReviewsList,
   setShowReviewsList,
   currentSegment,
+  ratingsUpdateTrigger,
   handleRoadClick,
   handleAddReview,
   handleViewReviews,
@@ -241,11 +247,16 @@ function AppContent({
         setRewards={setRewards}
       />
       <div className="flex-1">
-        <Map routingMode={routingMode} onRoadClick={handleRoadClick} />
+        <Map
+          routingMode={routingMode}
+          onRoadClick={handleRoadClick}
+          ratingsUpdateTrigger={ratingsUpdateTrigger}
+        />
       </div>
 
       {/* Road Info Panel */}
       <RoadInfoPanel
+        key={`${currentSegment?.id}-${reviews.length}`}
         isOpen={showRoadInfo}
         onClose={() => setShowRoadInfo(false)}
         segment={currentSegment}

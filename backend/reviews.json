@@ -278,5 +278,39 @@
     "timestamp": 1777910134658,
     "likes": 0,
     "dislikes": 0
+  },
+  {
+    "id": "1777910359239",
+    "segmentId": "road-М 18-36.1499-49.8900",
+    "roadName": "М 18",
+    "segment": "Копти-Глухов-Бачевск",
+    "rating": 5,
+    "comment": "1111111111",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "h1PdLW+A11pDg7auYNZIYlH0Te5mbFVDaFGmbXHKsMW5OxiIjFe5UCrL5tr+c0m1s3svZBXGk5UYKlYc1SHTCQ==",
+    "timestamp": 1777910359239,
+    "likes": 0,
+    "dislikes": 1,
+    "voters": {
+      "likes": [],
+      "dislikes": [
+        "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL"
+      ]
+    }
+  },
+  {
+    "id": "1777910389248",
+    "segmentId": "road-М 18-36.1499-49.8900",
+    "roadName": "М 18",
+    "segment": "",
+    "rating": 3,
+    "comment": "32323232323232323232",
+    "date": "2026-05-04",
+    "author": "8Mqqe3RKAT26RtAhWSVNbdj13vrunaG55hLe4nTu2TtL",
+    "signature": "RF5nbmm5a2WshcOf4YKmIRKLjPiwUjSdruVqL33OnU4MwRhgaJMU01NdKlBv1/erkaU0PkuwxEkh4HuvdqCBCw==",
+    "timestamp": 1777910389248,
+    "likes": 0,
+    "dislikes": 0
   }
 ]

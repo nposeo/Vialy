@@ -58,4 +58,10 @@ export const api = {
     });
     return response.json();
   },
+
+  // Get average ratings for all roads
+  async getRoadRatings() {
+    const response = await fetch(`${API_URL}/roads/ratings`);
+    return response.json();
+  },
 };

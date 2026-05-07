@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../utils/api';
+import CustomWalletButton from './CustomWalletButton';
 
 export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rewards, setRewards }) {
   const { publicKey, signMessage } = useWallet();
@@ -106,7 +106,7 @@ export default function Sidebar({ routingMode, setRoutingMode, selectedRoad, rew
       {/* Wallet Connection */}
       <div className="p-6 border-b border-dark-border">
         <h2 className="text-sm font-semibold mb-3">{t('wallet.title')}</h2>
-        <WalletMultiButton className="!bg-purple-600 hover:!bg-purple-700 !rounded-lg !h-10 !text-sm" />
+        <CustomWalletButton />
 
         {publicKey && (
           <div className="mt-3 p-3 bg-dark-bg rounded-lg">

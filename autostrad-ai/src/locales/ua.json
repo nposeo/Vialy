@@ -7,7 +7,12 @@
     "wallet": {
       "title": "Гаманець",
       "address": "Адреса:",
-      "connect": "Підключити гаманець"
+      "connect": "Підключити гаманець",
+      "disconnect": "Відключити",
+      "changeWallet": "Змінити гаманець",
+      "selectWallet": "Оберіть гаманець",
+      "connectDescription": "Підключіть гаманець на Solana, щоб продовжити",
+      "moreOptions": "Більше варіантів"
     },
     "routing": {
       "title": "Режим маршруту",

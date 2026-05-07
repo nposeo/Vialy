@@ -7,7 +7,12 @@
     "wallet": {
       "title": "Wallet",
       "address": "Address:",
-      "connect": "Connect Wallet"
+      "connect": "Connect Wallet",
+      "disconnect": "Disconnect",
+      "changeWallet": "Change wallet",
+      "selectWallet": "Select wallet",
+      "connectDescription": "Connect a wallet on Solana to continue",
+      "moreOptions": "More options"
     },
     "routing": {
       "title": "Route Mode",
