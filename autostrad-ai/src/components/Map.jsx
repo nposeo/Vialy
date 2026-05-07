@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap } from 'react-leaflet';
+import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -52,9 +53,11 @@ function MapController({ center }) {
 }
 
 export default function Map({ routingMode, onRoadClick }) {
+  const { t, i18n } = useTranslation();
   const [roadsData, setRoadsData] = useState(null);
   const [mapCenter, setMapCenter] = useState([48.3794, 31.1656]); // Центр Украины
   const [selectedRoad, setSelectedRoad] = useState(null);
+  const [geoJsonKey, setGeoJsonKey] = useState(0); // Ключ для пересоздания GeoJSON слоя
 
   useEffect(() => {
     // Загрузка GeoJSON данных
@@ -66,6 +69,11 @@ export default function Map({ routingMode, onRoadClick }) {
       })
       .catch(error => console.error('Error loading roads data:', error));
   }, []);
+
+  // Пересоздаем GeoJSON слой при смене языка
+  useEffect(() => {
+    setGeoJsonKey(prev => prev + 1);
+  }, [i18n.language]);
 
   // Стиль для каждой дороги
   const roadStyle = (feature) => {
@@ -86,7 +94,9 @@ export default function Map({ routingMode, onRoadClick }) {
   const onEachFeature = (feature, layer) => {
     const roadName = feature.properties?.name || 'Неизвестная дорога';
     const quality = getRoadQuality(roadName);
-    const qualityText = quality === 'good' ? 'Хорошее' : quality === 'medium' ? 'Среднее' : 'Плохое';
+    const qualityText = quality === 'good' ? t('selectedRoad.good') :
+                        quality === 'medium' ? t('selectedRoad.medium') :
+                        t('selectedRoad.bad');
 
     layer.on({
       click: (e) => {
@@ -126,7 +136,7 @@ export default function Map({ routingMode, onRoadClick }) {
     layer.bindPopup(`
       <div style="color: #000;">
         <strong>${roadName}</strong><br/>
-        Качество: <span style="color: ${qualityColors[quality]}">${qualityText}</span>
+        ${t('selectedRoad.quality')} <span style="color: ${qualityColors[quality]}">${qualityText}</span>
       </div>
     `);
   };
@@ -146,6 +156,7 @@ export default function Map({ routingMode, onRoadClick }) {
 
         {roadsData && (
           <GeoJSON
+            key={geoJsonKey}
             data={roadsData}
             style={roadStyle}
             onEachFeature={onEachFeature}
@@ -157,19 +168,19 @@ export default function Map({ routingMode, onRoadClick }) {
 
       {/* Легенда */}
       <div className="absolute bottom-8 right-8 bg-dark-card border border-dark-border rounded-lg p-4 shadow-lg z-[1000]">
-        <h3 className="text-sm font-semibold mb-2">Качество дорог</h3>
+        <h3 className="text-sm font-semibold mb-2">{t('selectedRoad.quality')}</h3>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <div className="w-8 h-1" style={{ backgroundColor: qualityColors.good }}></div>
-            <span className="text-xs">Хорошее</span>
+            <span className="text-xs">{t('selectedRoad.good')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-1" style={{ backgroundColor: qualityColors.medium }}></div>
-            <span className="text-xs">Среднее</span>
+            <span className="text-xs">{t('selectedRoad.medium')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-1" style={{ backgroundColor: qualityColors.poor }}></div>
-            <span className="text-xs">Плохое</span>
+            <span className="text-xs">{t('selectedRoad.bad')}</span>
           </div>
         </div>
       </div>

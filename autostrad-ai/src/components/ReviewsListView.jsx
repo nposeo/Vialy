@@ -2,9 +2,11 @@ import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { X, Star, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useTranslation } from 'react-i18next';
 
 export default function ReviewsListView({ isOpen, onClose, segment, reviews, onLike, onDislike }) {
   const { signMessage, publicKey } = useWallet();
+  const { t } = useTranslation();
   const [processingId, setProcessingId] = useState(null);
 
   console.log('ReviewsListView - segment:', segment);
@@ -26,7 +28,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
 
   const handleLike = async (reviewId) => {
     if (!publicKey) {
-      alert('Подключите кошелек');
+      alert(t('alerts.connectWallet'));
       return;
     }
 
@@ -34,7 +36,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
 
     try {
       const message = new TextEncoder().encode(
-        `AutostradAI Like\nReview ID: ${reviewId}\nAction: LIKE\nTimestamp: ${Date.now()}`
+        `Vialy Like\nReview ID: ${reviewId}\nAction: LIKE\nTimestamp: ${Date.now()}`
       );
 
       const signature = await signMessage(message);
@@ -46,7 +48,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
       });
     } catch (error) {
       console.error('Error liking review:', error);
-      alert('Ошибка при голосовании');
+      alert(t('alerts.errorVoting'));
     } finally {
       setProcessingId(null);
     }
@@ -54,7 +56,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
 
   const handleDislike = async (reviewId) => {
     if (!publicKey) {
-      alert('Подключите кошелек');
+      alert(t('alerts.connectWallet'));
       return;
     }
 
@@ -62,7 +64,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
 
     try {
       const message = new TextEncoder().encode(
-        `AutostradAI Dislike\nReview ID: ${reviewId}\nAction: DISLIKE\nTimestamp: ${Date.now()}`
+        `Vialy Dislike\nReview ID: ${reviewId}\nAction: DISLIKE\nTimestamp: ${Date.now()}`
       );
 
       const signature = await signMessage(message);
@@ -74,7 +76,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
       });
     } catch (error) {
       console.error('Error disliking review:', error);
-      alert('Ошибка при голосовании');
+      alert(t('alerts.errorVoting'));
     } finally {
       setProcessingId(null);
     }
@@ -135,15 +137,13 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                   <div>
                     <Dialog.Title style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>
-                      Отзывы
+                      {t('reviewsList.title')}
                     </Dialog.Title>
                     <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.25rem' }}>
                       {segment.properties?.name || 'Дорога'} • {segmentReviews.length}{' '}
                       {segmentReviews.length === 1
-                        ? 'отзыв'
-                        : segmentReviews.length < 5
-                        ? 'отзыва'
-                        : 'отзывов'}
+                        ? t('roadInfo.review')
+                        : t('roadInfo.reviews')}
                     </p>
                   </div>
                   <button
@@ -157,9 +157,9 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
                 <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.5rem' }}>
                   {segmentReviews.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-                      <p style={{ color: '#9ca3af' }}>Пока нет отзывов</p>
+                      <p style={{ color: '#9ca3af' }}>{t('reviewsList.noReviews')}</p>
                       <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                        Будьте первым, кто оставит отзыв!
+                        {t('alerts.beFirstReview')}
                       </p>
                     </div>
                   ) : (
@@ -277,7 +277,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
                             </button>
 
                             {processingId === review.id && (
-                              <span style={{ fontSize: '0.75rem', color: '#9ca3af', marginLeft: '0.5rem' }}>Обработка...</span>
+                              <span style={{ fontSize: '0.75rem', color: '#9ca3af', marginLeft: '0.5rem' }}>{t('reviewsList.processing')}</span>
                             )}
                           </div>
                         </div>
@@ -295,7 +295,7 @@ export default function ReviewsListView({ isOpen, onClose, segment, reviews, onL
                     borderRadius: '0.5rem'
                   }}>
                     <p style={{ fontSize: '0.875rem', color: '#fbbf24', textAlign: 'center' }}>
-                      Подключите кошелек для голосования за отзывы
+                      {t('reviewsList.connectWallet')}
                     </p>
                   </div>
                 )}

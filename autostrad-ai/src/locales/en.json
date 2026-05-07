@@ -1,0 +1,79 @@
+{
+  "translation": {
+    "app": {
+      "title": "Vialy",
+      "subtitle": "DePIN navigator on Solana"
+    },
+    "wallet": {
+      "title": "Wallet",
+      "address": "Address:",
+      "connect": "Connect Wallet"
+    },
+    "routing": {
+      "title": "Route Mode",
+      "fast": "⚡ Fast",
+      "comfort": "🛣️ Comfort",
+      "fastDesc": "Shortest route by time",
+      "comfortDesc": "Bypass bad road sections"
+    },
+    "selectedRoad": {
+      "title": "Selected Road",
+      "name": "Name:",
+      "quality": "Quality:",
+      "good": "Good",
+      "medium": "Medium",
+      "bad": "Bad",
+      "confirmQuality": "✓ Confirm Quality",
+      "confirming": "Confirming..."
+    },
+    "rewards": {
+      "title": "Rewards",
+      "balance": "Token Balance",
+      "description": "Confirm road quality and earn tokens"
+    },
+    "roadInfo": {
+      "settlements": "Settlements",
+      "length": "Section Length",
+      "condition": "Current Road Condition",
+      "rating": "Rating",
+      "reviews": "reviews",
+      "review": "review",
+      "noReviews": "No reviews yet. Be the first!",
+      "loading": "Loading rating...",
+      "addButton": "Add",
+      "reviewsButton": "Reviews"
+    },
+    "reviewsList": {
+      "title": "Reviews",
+      "noReviews": "No reviews for this section yet",
+      "connectWallet": "Connect wallet to vote for reviews",
+      "processing": "Processing..."
+    },
+    "addReview": {
+      "title": "Add Review",
+      "roadName": "Road Name",
+      "segment": "Section",
+      "rating": "Rating",
+      "comment": "Comment",
+      "commentPlaceholder": "Describe the road condition...",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "date": "Trip Date",
+      "route": "Route",
+      "yourReview": "Your Review",
+      "minChars": "Minimum 10 characters",
+      "signatureNote": "Review will be signed with your wallet and rewarded with tokens"
+    },
+    "alerts": {
+      "connectWallet": "Connect wallet",
+      "selectRoad": "Select a road on the map",
+      "qualityConfirmed": "✅ Quality confirmed!\n+{{reward}} $AUTO tokens\n\nRoad: {{roadName}}\nQuality: {{quality}}",
+      "errorConfirming": "Error confirming quality",
+      "errorSubmitting": "Error submitting review",
+      "errorVoting": "Error voting",
+      "minCharsRequired": "Review must contain at least 10 characters",
+      "beFirstReview": "Be the first to leave a review!"
+    }
+  }
+}

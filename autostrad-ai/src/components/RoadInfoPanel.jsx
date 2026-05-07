@@ -1,9 +1,11 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { X, ThumbsUp, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../utils/api';
 
 export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, onViewReviews }) {
+  const { t, i18n } = useTranslation();
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -37,8 +39,8 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
 
   // Mock data для демонстрации (если нет в GeoJSON)
   const settlements = segment.properties?.settlements || 'Копти-Глухов-Бачевск';
-  const length = segment.properties?.length || '45 км';
-  const condition = segment.properties?.condition || 'Среднее';
+  const length = segment.properties?.length || `45 ${i18n.language === 'en' ? 'km' : 'км'}`;
+  const condition = segment.properties?.condition || t('selectedRoad.medium');
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -101,7 +103,7 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                 {/* Settlements */}
                 <div style={{ marginBottom: '1rem' }}>
                   <div style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.25rem' }}>
-                    Населенные пункты
+                    {t('roadInfo.settlements')}
                   </div>
                   <div style={{ fontSize: '1rem', color: 'white', fontWeight: 500 }}>
                     {settlements}
@@ -111,7 +113,7 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                 {/* Length */}
                 <div style={{ marginBottom: '1rem' }}>
                   <div style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.25rem' }}>
-                    Протяженность участка
+                    {t('roadInfo.length')}
                   </div>
                   <div style={{ fontSize: '1rem', color: 'white', fontWeight: 500 }}>
                     {length}
@@ -121,7 +123,7 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                 {/* Condition */}
                 <div style={{ marginBottom: '1.5rem' }}>
                   <div style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.25rem' }}>
-                    Текущее состояние дороги
+                    {t('roadInfo.condition')}
                   </div>
                   <div style={{ fontSize: '1rem', color: 'white', fontWeight: 500 }}>
                     {condition}
@@ -137,7 +139,7 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                 }}>
                   {loading ? (
                     <div style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
-                      Загрузка рейтинга...
+                      {t('roadInfo.loading')}
                     </div>
                   ) : totalReviews > 0 ? (
                     <>
@@ -162,12 +164,12 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                         </div>
                       </div>
                       <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                        ({totalReviews} {totalReviews === 1 ? 'отзыв' : totalReviews < 5 ? 'отзыва' : 'отзывов'})
+                        ({totalReviews} {totalReviews === 1 ? t('roadInfo.review') : t('roadInfo.reviews')})
                       </div>
                     </>
                   ) : (
                     <div style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
-                      Пока нет отзывов. Будьте первым!
+                      {t('roadInfo.noReviews')}
                     </div>
                   )}
                 </div>
@@ -192,7 +194,7 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                     onMouseOver={(e) => e.target.style.backgroundColor = '#16a34a'}
                     onMouseOut={(e) => e.target.style.backgroundColor = '#22c55e'}
                   >
-                    Добавить
+                    {t('roadInfo.addButton')}
                   </button>
                   <button
                     onClick={() => {
@@ -212,7 +214,7 @@ export default function RoadInfoPanel({ isOpen, onClose, segment, onAddReview, o
                     onMouseOver={(e) => e.target.style.backgroundColor = '#2563eb'}
                     onMouseOut={(e) => e.target.style.backgroundColor = '#3b82f6'}
                   >
-                    Отзывы
+                    {t('roadInfo.reviewsButton')}
                   </button>
                 </div>
               </Dialog.Panel>

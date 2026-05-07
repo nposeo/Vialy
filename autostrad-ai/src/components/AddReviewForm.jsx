@@ -2,9 +2,11 @@ import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { X, Star, Calendar } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useTranslation } from 'react-i18next';
 
 export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
   const { signMessage, publicKey } = useWallet();
+  const { t } = useTranslation();
 
   // Initialize form data when segment changes
   const [formData, setFormData] = useState({
@@ -49,7 +51,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
     }
 
     if (formData.comment.trim().length < 10) {
-      alert('Отзыв должен содержать минимум 10 символов');
+      alert(t('alerts.minCharsRequired'));
       return;
     }
 
@@ -57,7 +59,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
 
     try {
       const message = new TextEncoder().encode(
-        `AutostradAI Review\nRoad: ${formData.roadName}\nRating: ${formData.rating}\nDate: ${formData.date}\nComment: ${formData.comment}\nTimestamp: ${Date.now()}`
+        `Vialy Review\nRoad: ${formData.roadName}\nRating: ${formData.rating}\nDate: ${formData.date}\nComment: ${formData.comment}\nTimestamp: ${Date.now()}`
       );
 
       const signature = await signMessage(message);
@@ -90,7 +92,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
       onClose();
     } catch (error) {
       console.error('Error submitting review:', error);
-      alert('Ошибка при отправке отзыва');
+      alert(t('alerts.errorSubmitting'));
     } finally {
       setIsSubmitting(false);
     }
@@ -137,7 +139,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                   <Dialog.Title style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>
-                    Добавить отзыв
+                    {t('addReview.title')}
                   </Dialog.Title>
                   <button
                     onClick={onClose}
@@ -151,7 +153,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                   {/* Date */}
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', marginBottom: '0.5rem' }}>
-                      Дата поездки
+                      {t('addReview.date')}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
@@ -175,7 +177,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                   {/* Road Name */}
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', marginBottom: '0.5rem' }}>
-                      Трасса
+                      {t('addReview.route')}
                     </label>
                     <input
                       type="text"
@@ -197,7 +199,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                   {/* Segment */}
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', marginBottom: '0.5rem' }}>
-                      Участок
+                      {t('addReview.segment')}
                     </label>
                     <input
                       type="text"
@@ -219,7 +221,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                   {/* Rating */}
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', marginBottom: '0.5rem' }}>
-                      Оценка
+                      {t('addReview.rating')}
                     </label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -245,7 +247,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                   {/* Comment */}
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', marginBottom: '0.5rem' }}>
-                      Ваш отзыв
+                      {t('addReview.yourReview')}
                     </label>
                     <textarea
                       value={formData.comment}
@@ -254,7 +256,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                           setFormData({ ...formData, comment: e.target.value });
                         }
                       }}
-                      placeholder="Опишите состояние дороги, качество покрытия, наличие ям..."
+                      placeholder={t('addReview.commentPlaceholder')}
                       rows={6}
                       style={{
                         width: '100%',
@@ -268,7 +270,7 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                       }}
                     />
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem' }}>
-                      <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Минимум 10 символов</span>
+                      <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{t('addReview.minChars')}</span>
                       <span style={{ fontSize: '0.75rem', color: remainingChars < 100 ? '#facc15' : '#6b7280' }}>
                         {remainingChars} / {maxChars}
                       </span>
@@ -291,12 +293,12 @@ export default function AddReviewForm({ isOpen, onClose, segment, onSubmit }) {
                       fontSize: '1rem'
                     }}
                   >
-                    {isSubmitting ? 'Отправка...' : publicKey ? 'Сохранить' : 'Подключите кошелек'}
+                    {isSubmitting ? t('addReview.submitting') : publicKey ? t('addReview.submit') : t('alerts.connectWallet')}
                   </button>
 
                   {publicKey && (
                     <p style={{ fontSize: '0.75rem', color: '#9ca3af', textAlign: 'center', marginTop: '0.75rem' }}>
-                      Отзыв будет подписан вашим кошельком и вознагражден токенами
+                      {t('addReview.signatureNote')}
                     </p>
                   )}
                 </form>

@@ -7,6 +7,7 @@ import RoadInfoPanel from './components/RoadInfoPanel';
 import AddReviewForm from './components/AddReviewForm';
 import ReviewsListView from './components/ReviewsListView';
 import { api } from './utils/api';
+import './i18n';
 
 function App() {
   const [routingMode, setRoutingMode] = useState('fast');

@@ -1,0 +1,79 @@
+{
+  "translation": {
+    "app": {
+      "title": "Vialy",
+      "subtitle": "DePIN навігатор на Solana"
+    },
+    "wallet": {
+      "title": "Гаманець",
+      "address": "Адреса:",
+      "connect": "Підключити гаманець"
+    },
+    "routing": {
+      "title": "Режим маршруту",
+      "fast": "⚡ Швидкий",
+      "comfort": "🛣️ Комфорт",
+      "fastDesc": "Найкоротший шлях за часом",
+      "comfortDesc": "Об'їзд поганих ділянок доріг"
+    },
+    "selectedRoad": {
+      "title": "Обрана дорога",
+      "name": "Назва:",
+      "quality": "Якість:",
+      "good": "Добра",
+      "medium": "Середня",
+      "bad": "Погана",
+      "confirmQuality": "✓ Підтвердити якість",
+      "confirming": "Підтвердження..."
+    },
+    "rewards": {
+      "title": "Винагороди",
+      "balance": "Баланс токенів",
+      "description": "Підтверджуйте якість доріг і заробляйте токени"
+    },
+    "roadInfo": {
+      "settlements": "Населені пункти",
+      "length": "Протяжність ділянки",
+      "condition": "Поточний стан дороги",
+      "rating": "Рейтинг",
+      "reviews": "відгуків",
+      "review": "відгук",
+      "noReviews": "Поки немає відгуків. Будьте першим!",
+      "loading": "Завантаження рейтингу...",
+      "addButton": "Додати",
+      "reviewsButton": "Відгуки"
+    },
+    "reviewsList": {
+      "title": "Відгуки",
+      "noReviews": "Поки немає відгуків для цієї ділянки",
+      "connectWallet": "Підключіть гаманець для голосування за відгуки",
+      "processing": "Обробка..."
+    },
+    "addReview": {
+      "title": "Додати відгук",
+      "roadName": "Назва дороги",
+      "segment": "Ділянка",
+      "rating": "Оцінка",
+      "comment": "Коментар",
+      "commentPlaceholder": "Опишіть стан дороги...",
+      "cancel": "Скасувати",
+      "submit": "Відправити",
+      "submitting": "Відправка...",
+      "date": "Дата поїздки",
+      "route": "Траса",
+      "yourReview": "Ваш відгук",
+      "minChars": "Мінімум 10 символів",
+      "signatureNote": "Відгук буде підписаний вашим гаманцем і винагороджений токенами"
+    },
+    "alerts": {
+      "connectWallet": "Підключіть гаманець",
+      "selectRoad": "Виберіть дорогу на карті",
+      "qualityConfirmed": "✅ Якість підтверджено!\n+{{reward}} $AUTO токенів\n\nДорога: {{roadName}}\nЯкість: {{quality}}",
+      "errorConfirming": "Помилка при підтвердженні якості",
+      "errorSubmitting": "Помилка при відправці відгуку",
+      "errorVoting": "Помилка при голосуванні",
+      "minCharsRequired": "Відгук повинен містити мінімум 10 символів",
+      "beFirstReview": "Будьте першим, хто залишить відгук!"
+    }
+  }
+}
