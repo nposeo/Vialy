@@ -5,6 +5,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || "0.0.0.0";
 
 // Middleware
 app.use(cors());
@@ -296,6 +297,6 @@ app.get('/api/roads/ratings', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Backend API running on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Backend API running on http://${HOST}:${PORT}`);
 });
