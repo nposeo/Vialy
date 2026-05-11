@@ -1,4 +1,9 @@
-const API_URL = '/api';
+const BASE_URL =
+  import.meta.env.MODE === 'development'
+    ? 'http://localhost:3001'
+    : import.meta.env.VITE_API_URL;
+
+const API_URL = `${BASE_URL}/api`;
 
 export const api = {
   // Get all reviews
