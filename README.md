@@ -1,97 +1,207 @@
-# AutostradAI - DePIN Навигатор на Solana
+# Vialy — DePIN Navigation Network on Solana
 
-MVP dApp-приложения для навигации по дорогам Украины с учетом их качества, построенное на React + Vite с интеграцией Solana.
+Vialy is a DePIN (Decentralized Physical Infrastructure Network) MVP for navigation across roads in Ukraine with real-time road quality awareness.
 
-## 🚀 Возможности
+The project is built as a **Solana dApp (React + Vite)** with wallet-based interaction and a decentralized user-driven road validation system.
 
-- **Интерактивная карта** с визуализацией дорог по качеству (зеленый/желтый/красный)
-- **Smart Routing** - два режима построения маршрутов:
-  - ⚡ **Быстрый** - кратчайший путь по времени
-  - 🛣️ **Комфортный** - объезд плохих участков дорог
-- **Solana Integration** - подключение кошелька (Phantom/Solflare)
-- **Подтверждение качества** - подпись сообщений через кошелек
-- **Токены $AUTO** - начисление вознаграждений за подтверждение качества дорог
-- **Темный интерфейс** с современным дизайном
+---
 
-## 🛠 Технологии
+## 🌐 Problem Statement
 
-- **React 19** + **Vite** - быстрая разработка
-- **react-leaflet** - интерактивная карта
-- **@solana/wallet-adapter** - интеграция с Solana кошельками
-- **@turf/turf** - геопространственный анализ для маршрутизации
-- **Tailwind CSS** - стилизация
+Traditional navigation systems:
+- do not reflect real-time road quality
+- lack decentralized validation of infrastructure data
+- do not incentivize users to update or verify infrastructure conditions
 
-## 📦 Установка
+---
+
+## 🚀 Solution (DePIN Layer)
+
+Vialy introduces a **decentralized infrastructure data collection and validation model**:
+
+- users confirm road quality conditions
+- data is signed via Solana wallet
+- contributors are incentivized with rewards ($AUTO simulation)
+- aggregated data is used for routing optimization
+
+---
+
+## 🧠 Core Features
+
+### 🗺 Interactive Map Layer
+- Real-time visualization of roads in Ukraine
+- Road classification:
+  - 🟢 Good (M roads)
+  - 🟡 Medium (H roads)
+  - 🔴 Poor (local roads)
+
+---
+
+### ⚡ Smart Routing Engine
+
+Two routing modes:
+
+- ⚡ **Fast Route**
+  - optimized for shortest time
+  - uniform edge weights
+
+- 🛣️ **Comfort Route**
+  - avoids low-quality roads
+  - penalty system applied:
+    - poor roads → x5 cost
+    - medium roads → x2 cost
+    - good roads → baseline
+
+---
+
+### 🔗 Solana Integration (DePIN Core)
+
+- Wallet connection:
+  - Phantom
+  - Solflare
+- Message signing for road validation
+- Devnet-ready architecture
+- Reward simulation system ($AUTO tokens)
+
+---
+
+### 🎮 Incentive System
+
+- users validate road conditions
+- +10 $AUTO for each confirmation
+- encourages crowd-sourced infrastructure mapping
+
+---
+
+## 🛠 Tech Stack
+
+- React 19 + Vite — frontend framework
+- react-leaflet — geospatial visualization
+- @turf/turf — routing and spatial analysis
+- @solana/wallet-adapter — blockchain wallet integration
+- Tailwind CSS — UI styling system
+
+---
+
+## 📦 Installation
 
 ```bash
-# Установите зависимости
 npm install
-
-# Запустите dev-сервер
 npm run dev
+````
+
+Application runs at:
+
+```
+http://localhost:5173
 ```
 
-Приложение будет доступно по адресу: http://localhost:5173
+---
 
-## 🎮 Использование
+## 🎮 User Flow
 
-1. **Откройте приложение** в браузере
-2. **Подключите кошелек** (Phantom или Solflare) через кнопку в боковой панели
-3. **Выберите режим маршрута**:
-   - Быстрый - для кратчайшего пути
-   - Комфортный - для объезда плохих дорог
-4. **Кликните на дорогу** на карте, чтобы увидеть информацию о ней
-5. **Подтвердите качество** дороги, чтобы заработать +10 $AUTO токенов
+1. Open the application
+2. Connect Solana wallet
+3. Choose routing mode:
 
-## 🗺 Данные о дорогах
+   * Fast
+   * Comfort
+4. Interact with roads on the map
+5. View road metadata
+6. Confirm road quality
+7. Receive reward ($AUTO simulation)
 
-Приложение использует GeoJSON файл с данными о дорогах Украины:
-- **М** (международные) - хорошее качество (зеленый)
-- **Н** (национальные) - среднее качество (желтый)
-- Остальные - плохое качество (красный)
+---
 
-## 🔧 Структура проекта
+## 🧭 Routing Algorithm
+
+The routing engine is based on a **modified Dijkstra algorithm**:
+
+* Fast mode → equal weights for all edges
+* Comfort mode → weighted penalty system:
+
+  * poor roads → x5 cost
+  * medium roads → x2 cost
+  * good roads → baseline
+
+This enables adaptive routing based on infrastructure quality.
+
+---
+
+## 🗺 Data Model
+
+Road data is stored in GeoJSON format:
+
+* M (international roads) → high quality
+* H (national roads) → medium quality
+* local roads → low quality
+
+---
+
+## 🏗 Architecture
 
 ```
 src/
 ├── components/
-│   ├── Map.jsx              # Компонент карты с Leaflet
-│   ├── Sidebar.jsx          # Боковая панель с управлением
-│   └── WalletProvider.jsx   # Провайдер Solana кошелька
+│   ├── Map.jsx
+│   ├── Sidebar.jsx
+│   └── WalletProvider.jsx
 ├── utils/
-│   └── routing.js           # Алгоритмы маршрутизации (Dijkstra + turf.js)
-├── App.jsx                  # Главный компонент
-├── main.jsx                 # Точка входа
-└── index.css                # Глобальные стили
+│   └── routing.js
+├── App.jsx
+├── main.jsx
+└── index.css
 
 public/
-└── roads.geojson            # Данные о дорогах
+└── roads.geojson
 ```
 
-## 🎨 Особенности реализации
+---
 
-### Smart Routing
-Алгоритм использует модифицированный Dijkstra с учетом качества дорог:
-- В режиме "Быстрый" все дороги имеют одинаковый вес
-- В режиме "Комфортный" плохие дороги получают штраф x5, что заставляет алгоритм искать объезд
+## 🔥 DePIN Design Principles
 
-### Solana Integration
-- Подключение через @solana/wallet-adapter
-- Работа с Devnet для тестирования
-- Подпись сообщений с координатами и качеством дороги
-- Визуальное начисление токенов $AUTO
+* user-generated infrastructure data
+* wallet-based identity layer
+* incentivized validation mechanism
+* decentralized data contribution model (MVP simulation)
 
-### Визуализация
-- Цветовая кодировка дорог по качеству
-- Полупрозрачность плохих дорог в режиме "Комфортный"
-- Интерактивные попапы с информацией о дорогах
-- Темная тема карты через CSS фильтры
+---
 
-## 🚧 Дальнейшее развитие
+## 🚧 Roadmap
 
-- [ ] Реальное построение маршрутов между точками
-- [ ] Интеграция с Solana программой для реального начисления токенов
-- [ ] Добавление точек интереса (заправки, сервисы)
-- [ ] Мобильная версия
-- [ ] Отчеты о состоянии дорог с фото
-- [ ] Интеграция с GPS для отслеживания маршрута
+* On-chain reward distribution (Solana program)
+* Real GPS tracking integration
+* Photo-based road verification system
+* Real-time infrastructure updates
+* Mobile-first PWA version
+* Expansion to multi-region road networks
+
+---
+
+## 👥 Development Notes
+
+This project was built iteratively during a hackathon sprint:
+
+* Phase 1: routing engine + map visualization
+* Phase 2: UI/UX and interaction layer
+* Phase 3: Solana wallet integration
+* Phase 4: DePIN incentive system design
+
+---
+
+## ⚠️ Disclaimer
+
+This is an MVP prototype.
+Token rewards and economic mechanisms are simulated and not deployed on mainnet.
+
+---
+
+## 📌 Repository Structure Note
+
+For local development, the following repository was used:
+- https://github.com/hodoor6/v2
+
+However, the **primary repository for build, deployment, and submission purposes** is:
+- https://github.com/nposeo/Vialy
+
+The Vialy repository is considered the main source of truth because it contains the latest production-ready code, deployment configuration, and final integrated backend/frontend setup used for the live demo.
